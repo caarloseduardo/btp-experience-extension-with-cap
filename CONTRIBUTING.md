@@ -1,38 +1,38 @@
 # Contributing
 
-## Code of Conduct
+## Código de Conduta
 
-All members of the project community must abide by the [SAP Open Source Code of Conduct](https://github.com/SAP/.github/blob/main/CODE_OF_CONDUCT.md).
-Only by respecting each other we can develop a productive, collaborative community.
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported by contacting [a project maintainer](.reuse/dep5).
+Todos os membros da comunidade do projeto devem respeitar o [Código de conduta de código aberto da SAP](https://github.com/SAP/.github/blob/main/CODE_OF_CONDUCT.md).
+Somente respeitando uns aos outros podemos desenvolver uma comunidade produtiva e colaborativa.
+Instâncias de comportamento abusivo, de assédio ou de outra forma inaceitável podem ser relatadas entrando em contato com [um mantenedor do projeto](.reuse/dep5).
 
-## Engaging in Our Project
+## Envolvendo-se em nosso projeto
 
-We use GitHub to manage reviews of pull requests.
+Usamos GitHub para gerenciar revisões de solicitações pull.
 
-* If you are a new contributor, see: [Steps to Contribute](#steps-to-contribute)
+* Se você for um novo contribuidor, consulte: [Passos para contribuir](#steps-to-contribute)
 
-* Before implementing your change, create an issue that describes the problem you would like to solve or the code that should be enhanced. Please note that you are willing to work on that issue.
+* Antes de implementar sua mudança, crie um problema que descreva o problema que você gostaria de resolver ou o código que deveria ser aprimorado. Observe que você está disposto a trabalhar nessa questão.
 
-* The team will review the issue and decide whether it should be implemented as a pull request. In that case, they will assign the issue to you. If the team decides against picking up the issue, the team will post a comment with an explanation.
+* A equipe analisará o problema e decidirá se ele deve ser implementado como uma pull request. Nesse caso, eles atribuirão o problema a você. Se a equipe decidir não resolver o problema, a equipe postará um comentário com uma explicação.
 
-## Steps to Contribute
+## Etapas para contribuir
 
-Should you wish to work on an issue, please claim it first by commenting on the GitHub issue that you want to work on. This is to prevent duplicated efforts from other contributors on the same issue.
+Se você deseja trabalhar em um problema, reivindique-o primeiro comentando sobre o problema do GitHub no qual deseja trabalhar. Isso evita esforços duplicados de outros colaboradores no mesmo assunto.
 
-If you have questions about one of the issues, please comment on them, and one of the maintainers will clarify.
+Se você tiver dúvidas sobre algum dos assuntos, comente-os e um dos mantenedores irá esclarecer.
 
-## Contributing Code or Documentation
+## Contribuindo com código ou documentação
 
-You are welcome to contribute code in order to fix a bug or to implement a new feature that is logged as an issue.
+Você está convidado a contribuir com código para corrigir um bug ou implementar um novo recurso registrado como um problema.
 
-The following rule governs code contributions:
+A regra a seguir rege as contribuições de código:
 
-* Contributions must be licensed under the [Apache 2.0 License](./LICENSE)
-* Due to legal reasons, contributors will be asked to accept a Developer Certificate of Origin (DCO) when they create the first pull request to this project. This happens in an automated fashion during the submission process. SAP uses [the standard DCO text of the Linux Foundation](https://developercertificate.org/).
+* As contribuições devem ser licenciadas sob a [Licença Apache 2.0](./LICENSE)
+* Por motivos legais, os contribuidores serão solicitados a aceitar um Certificado de Origem do Desenvolvedor (DCO) ao criarem a primeira solicitação pull para este projeto. Isso acontece de forma automatizada durante o processo de envio. A SAP usa [o texto DCO padrão da Linux Foundation](https://developercertificate.org/).
 
-## Issues and Planning
+## Problemas e planejamento
 
-* We use GitHub issues to track bugs and enhancement requests.
+* Usamos problemas do GitHub para rastrear bugs e solicitações de melhorias.
 
-* Please provide as much context as possible when you open an issue. The information you provide must be comprehensive enough to reproduce that issue for the assignee.
+* Forneça o máximo de contexto possível ao abrir um problema. As informações fornecidas devem ser abrangentes o suficiente para reproduzir esse problema para o cessionário.

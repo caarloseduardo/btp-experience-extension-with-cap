@@ -3,52 +3,52 @@
 [![REUSE status](https://api.reuse.software/badge/github.com/SAP-samples/teched2023-AD264)](https://api.reuse.software/info/github.com/SAP-samples/teched2023-AD264)
 
 
-## Description
+## Descrição
 
-This repository contains the material for the SAP TechEd 2023 session called<br>
+Este repositório contém o material para a sessão SAP BTP Experience 2024 chamada<br>
 _Build Extensions with SAP Cloud Application Programming Model_.
 
-## Overview
+## Visão geral
 
-Find out how to quickly develop side-by-side extensions using SAP Cloud Application Programming Model (CAP). Learn to define domain models and services in CDS language, all within minutes. Discover streamlined integration with SAP S/4HANA through minimal coding, leveraging both synchronous and asynchronous APIs.
+Descubra como desenvolver rapidamente extensões lado a lado usando SAP Cloud Application Programming Model (CAP). Aprenda a definir modelos de domínio e serviços na linguagem CDS, tudo em minutos. Descubra a integração simplificada com SAP S/4HANA por meio de codificação mínima, aproveitando APIs síncronas e assíncronas.
 
-## SAP Build Code
-Last year, SAP launched SAP Build to empower business experts to construct applications, implement automations and compose business sites. This year, the Build family is being expanded to offer a powerful shortcut for cloud application development with the introduction of **SAP Build Code**.
+## Código de construção SAP
+No ano passado, a SAP lançou o SAP Build para capacitar especialistas de negócios para construir aplicações, implementar automações e compor sites de negócios. Este ano, a família Build está sendo expandida para oferecer um atalho poderoso para o desenvolvimento de aplicativos em nuvem com a introdução do **SAP Build Code**.
 
 ![](assets/img-build-code-architecture.png)
 
-**SAP Build Code** unifies essential application development tools such as SAP Business Application Studio, SAP Cloud Application Programming Model (CAP), SAPUI5, SAP Mobile Services, and SAP Document Management Services. It is powered by the generative AI copilot, Joule, and enables interoperability with ABAP Cloud. Additionally, it facilitates seamless collaboration with SAP Build's low-code solutions and provides robust governance and lifecycle management features.
+**SAP Build Code** unifica ferramentas essenciais de desenvolvimento de aplicativos, como SAP Business Application Studio, SAP Cloud Application Programming Model (CAP), SAPUI5, SAP Mobile Services e SAP Document Management Services. Ele é alimentado pelo copiloto generativo de IA, Joule, e permite interoperabilidade com ABAP Cloud. Além disso, facilita a colaboração perfeita com as soluções de baixo código do SAP Build e fornece recursos robustos de governança e gerenciamento do ciclo de vida.
 
 ![](assets/img-build-code-benefits.png)
 
-## Requirements
+## Requisitos
 
-The requirements to follow the exercises in this repository are
+Os requisitos para seguir os exercícios deste repositório são
 
-- Either a subscription for SAP Business Application Studio, or a local VS Code with Node.js >= 18 installed
-- A browser, preferably Google Chrome
-
-
-## Exercises
-
-- [Getting Started](exercises/ex0/)
-- [Exercise 1 - Introduction to CAP](exercises/ex1/)
-- [Exercise 2 - Service Integration with SAP S/4HANA](exercises/ex2/)
-- [Exercise 3 - Replication and Events](exercises/ex3/)
-- [Summary](exercises/summary/)
+- Uma assinatura do SAP Business Application Studio ou um VS Code local com Node.js >= 18 instalado
+- Um navegador, de preferência Google Chrome
 
 
-## Contributing
+## Exercícios
 
-Please read the [CONTRIBUTING.md](./CONTRIBUTING.md) to understand the contribution guidelines.
+- [Introdução](exercises/ex0/)
+- [Exercício 1 - Introdução ao CAP](exercises/ex1/)
+- [Exercício 2 - Integração de serviços com SAP S/4HANA](exercises/ex2/)
+- [Exercício 3 - Replicação e Eventos](exercises/ex3/)
+- [Resumo](exercises/resumo/)
 
-## Code of Conduct
 
-Please read the [SAP Open Source Code of Conduct](https://github.com/SAP-samples/.github/blob/main/CODE_OF_CONDUCT.md).
+## Contribuindo
 
-## How to obtain support
+Por favor, leia [CONTRIBUTING.md](./CONTRIBUTING.md) para entender as diretrizes de contribuição.
 
-Support for the content in this repository is available during the actual time of the online session for which this content has been designed. Otherwise, you may request support via the [Issues](../../issues) tab.
+## Código de Conduta
 
-## License
-Copyright (c) 2023 SAP SE or an SAP affiliate company. All rights reserved. This project is licensed under the Apache Software License, version 2.0 except as noted otherwise in the [LICENSE](LICENSES/Apache-2.0.txt) file.
+Leia o [Código de conduta de código aberto da SAP](https://github.com/SAP-samples/.github/blob/main/CODE_OF_CONDUCT.md).
+
+## Como obter suporte
+
+O suporte para o conteúdo deste repositório está disponível durante a sessão online para a qual este conteúdo foi projetado. Caso contrário, você pode solicitar suporte através da aba [Issues](../../issues).
+
+## Licença
+Copyright (c) 2024 SAP SE ou empresa afiliada da SAP. Todos os direitos reservados. Este projeto está licenciado sob a Licença de Software Apache, versão 2.0, exceto quando indicado de outra forma no arquivo [LICENSE](LICENSES/Apache-2.0.txt).

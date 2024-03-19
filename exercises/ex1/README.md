@@ -1,53 +1,52 @@
-# Exercise 1 - Introduction to CAP
+# Exercício 1 - Introdução ao CAP
 
-In this exercise, you will build a small application with SAP Cloud Application Programming Model (CAP).
+Neste exercício, você construirá um pequeno aplicativo com SAP Cloud Application Programming Model (CAP).
 
-You will use this application scenario throughout the exercises.
-Also, you will get familiar with CAP and the CDS language.
+Você usará esse cenário de aplicação ao longo dos exercícios.
+Além disso, você se familiarizará com o CAP e a linguagem CDS.
 
-The conceptual domain model for this _Incidents Management_ application is as follows:
+O modelo de domínio conceitual para esta aplicação _Gerenciamento de Incidentes_ é o seguinte:
 
-- *Customers* can create *Incidents* (either directly or via agents)
-- *Incidents* have a title, a status and and urgency level
-- *Incidents* contain a *Conversation* history consisting of several messages
+- *Clientes* podem criar *Incidentes* (diretamente ou por meio de agentes)
+- *Incidentes* têm título, status e nível de urgência
+- *Incidentes* contêm um histórico de *Conversa* composto por diversas mensagens
 
 <p>
 
-![Domain model](assets/domain.drawio.svg)
+![Modelo de domínio](assets/domain.drawio.svg)
 
 
-## Create a Project
+## Crie um projeto
 
-👉 In SAP Business Application Studio, create a new _CAP Project_ through the project wizard.
-- Name it `incidents-mgt`, for example.
-- Accept the rest of the defaults.  No sample code needed; you will fill the project as you go.
+👉 No SAP Business Application Studio, crie um novo _CAP Project_ por meio do assistente de projeto.
+- Nomeie-o como `incidents-mgt`, por exemplo.
+- Aceite o restante dos padrões. Nenhum código de amostra é necessário; você preencherá o projeto conforme avança.
 
 <details>
-<summary>These screenshots help you find the project wizard:</summary>
+<summary>Estas capturas de tela ajudam você a encontrar o assistente do projeto:</summary>
 
-![New CAP Project](assets/BAS-NewProject.png)
+![Novo Projeto CAP](assets/BAS-NewProject.png)
 
-![New CAP Project - Details](assets/BAS-NewProject-Details.png)
+![Novo projeto CAP - Detalhes](assets/BAS-NewProject-Details.png)
 
 </details>
 <p>
 
-> You might also create the project with `cds init incidents-mgt` on the command line in the `/home/user/projects` folder.
+> Você também pode criar o projeto com `cds init incidents-mgt` na linha de comando na pasta `/home/user/projects`.
 
+## Adicionar incidentes
 
-## Add Incidents
+Agora você deveria ter mudado para um novo espaço de trabalho com o projeto criado.
 
-You should now have (been) switched to a new workspace with the created project.
+👉 Abra o explorador de arquivos novamente.
 
-👉 Open the file explorer again.
-
-👉 Create a file `data-model.cds` in the `db` folder.
-- There, add an `Incidents` [entity](https://cap.cloud.sap/docs/cds/cdl#entities) with a key field `ID` and a `title`.
-- Choose appropriate data types.  Use code completion (intellisense) to pick a fitting data type.
-- Also, add a namespace `incidents.mgt` to the beginning of the file, so that the entity's full name is `incidents.mgt.Incidents`
+👉 Crie um arquivo `data-model.cds` na pasta `db`.
+- Lá, adicione uma [entidade] `Incidents` (https://cap.cloud.sap/docs/cds/cdl#entities) com um campo-chave `ID` e um `title`.
+- Escolha os tipos de dados apropriados. Use o preenchimento de código (intellisense) para escolher um tipo de dados adequado.
+- Além disso, adicione um namespace `incidents.mgt` ao início do arquivo, para que o nome completo da entidade seja `incidents.mgt.Incidents`
 
 <details>
-<summary>This is how it should like:</summary>
+<summary>É assim que deveria ser:</summary>
 
 ```cds
 namespace incidents.mgt;
@@ -59,20 +58,20 @@ entity Incidents {
 ```
 </details>
 
-## Use Predefined Aspects
+## Use aspectos predefinidos
 
-The situation of `ID` key fields is so common that there is a prebuilt CDS aspect available named [`cuid`](https://cap.cloud.sap/docs/cds/common#aspect-cuid) that provides just that.<br>
-It can be imported with `using ... from '@sap/cds/common';` and used in an entity with the `:` (colon) syntax.
+A situação dos campos-chave `ID` é tão comum que existe um aspecto CDS pré-construído disponível chamado [`cuid`](https://cap.cloud.sap/docs/cds/common#aspect-cuid) que fornece exatamente isso .<br>
+Ele pode ser importado com `using ... from '@sap/cds/common';` e usado em uma entidade com a sintaxe `:` (dois pontos).
 
-Also, the `Incidents` entity shall carry information on when it was created and updated and by whom.  There is a [`managed` aspect from `@sap/cds/common`](https://cap.cloud.sap/docs/cds/common#aspect-managed) that does that.
+Além disso, a entidade `Incidents` deverá conter informações sobre quando foi criada e atualizada e por quem. Existe um [aspecto `managed` de `@sap/cds/common`](https://cap.cloud.sap/docs/cds/common#aspect-owned) que faz isso.
 
-👉 Make use of the two aspects and:
-- Replace the hand-crafted `ID` field with [`cuid`](https://cap.cloud.sap/docs/cds/common#aspect-cuid)<br>
-- Add the [`managed`](https://cap.cloud.sap/docs/cds/common#aspect-managed) aspect.
+👉 Faça uso dos dois aspectos e:
+- Substitua o campo `ID` criado manualmente por [`cuid`](https://cap.cloud.sap/docs/cds/common#aspect-cuid)<br>
+- Adicione o aspecto [`managed`](https://cap.cloud.sap/docs/cds/common#aspect-owned).
 
 
 <details>
-<summary>This is how it should like:</summary>
+<summary>É assim que deveria ser:</summary>
 
 ```cds
 using { cuid, managed } from '@sap/cds/common';
@@ -87,38 +86,38 @@ entity Incidents : cuid, managed {
 
 <p>
 
-👉 Take a few moments and check out what the `@sap/cds/common` package has to offer in addition.  In the editor, hold <kbd>Ctrl</kbd> (or <kbd>⌘</kbd>) and hover over the `managed` text.  Click to navigate inside.
-See the [documentation](https://cap.cloud.sap/docs/cds/common) for more.
+👉 Reserve alguns momentos e confira o que o pacote `@sap/cds/common` tem a oferecer adicionalmente. No editor, segure <kbd>Ctrl</kbd> (ou <kbd>⌘</kbd>) e passe o mouse sobre o texto `managed`. Clique para navegar por dentro.
+Consulte a [documentação](https://cap.cloud.sap/docs/cds/common) para saber mais.
 
 
-## Add a Conversation History
+## Adicione um histórico de conversa
 
-An incident shall hold a number of messages to build a conversation history.
+Um incidente deve conter uma série de mensagens para construir um histórico de conversação.
 
-To create such a relationship, the **graphical CDS modeler** in SAP Business Application Studio is a great tool.<br>
-👉 Open it for the `data-model.cds` file using one of two options:
-- Right click the `data-model.cds` file.  Select `Open With` > `CDS Graphical Modeler`
-- Or open the modeler through the project **Storyboard**:
-  - Press <kbd>F1</kbd> > `Open Storyboard`
-  - Click on the `Incidents` entity > `Open in Graphical Modeler`
+Para criar esse relacionamento, o **modelador gráfico de CDS** no SAP Business Application Studio é uma ótima ferramenta.<br>
+👉 Abra-o para o arquivo `data-model.cds` usando uma das duas opções:
+- Clique com o botão direito no arquivo `data-model.cds`. Selecione `Abrir com` > `Modelador gráfico CDS`
+- Ou abra o modelador através do projeto **Storyboard**:
+   - Pressione <kbd>F1</kbd> > `Abrir Storyboard`
+   - Clique na entidade `Incidents` > `Abrir no Modelador Gráfico`
 
-👉 In its canvas, add a `Conversations` entity.
-- In the `Aspects` tab in the property sheet, add the `ID` key field from CDS aspect `cuid`.
-- Add `timestamp`, `author`, and `message` fields with appropriate types.
+👉 Em sua tela, adicione uma entidade `Conversas`.
+- Na aba `Aspects` da folha de propriedades, adicione o campo-chave `ID` do aspecto CDS `cuid`.
+- Adicione os campos `timestamp`, `author` e `message` com os tipos apropriados.
 
-👉 Now **connect** the two entities.
-- Hover over the `Incidents` entity and find the `Add Relationship` button from the flyout menu.  Drag it **from** `Incidents` **to** the `Conversations` entity.
-- In the `New Relationship` dialog:
-  - Choose a relationship type so that whenever an `Incident` instance is deleted, all its conversations are deleted as well.
-  - Stay with the proposed `conversations` and `incidents` fields.
+👉 Agora **conecte** as duas entidades.
+- Passe o mouse sobre a entidade `Incidents` e encontre o botão `Adicionar Relacionamento` no menu suspenso. Arraste-o **de** `Incidents` **para** a entidade `Conversations`.
+- Na caixa de diálogo `Novo Relacionamento`:
+   - Escolha um tipo de relacionamento para que sempre que uma instância de `Incident` for excluída, todas as suas conversas também sejam excluídas.
+   - Fique com os campos propostos de `conversations` e `incidents`.
 
 
 <details>
-<summary>All in all, the entities shall look like this:</summary>
+<summary>Resumindo, as entidades ficarão assim:</summary>
 
-![Incidents and Conversations entities in graphical modeler](assets/Incidents-Conversations-graphical.png)
+![Entidades de incidentes e conversas no modelador gráfico](assets/Incidents-Conversations-graphical.png)
 
-As text, it looks like this. Note the `Composition` between the two entities.
+Como texto, fica assim. Observe a `Composição` entre as duas entidades.
 
 ```cds
 using { cuid, managed } from '@sap/cds/common';
@@ -140,28 +139,28 @@ entity Conversations : cuid, managed {
 
 </details>
 
-> To open the code editor, just double-click on the `db/data-model.cds` file in the explorer tree.
+> Para abrir o editor de código, basta clicar duas vezes no arquivo `db/data-model.cds` na árvore do explorador.
 
-<!-- > In the following exercises, feel free to use the graphical modeler or the code editor as you like. Find out what works for you.<br>
-In the solutions though, we will print the textual form, as it's more convenient to copy/paste. -->
+<!-- > Nos exercícios a seguir, sinta-se à vontade para usar o modelador gráfico ou o editor de código como desejar. Descubra o que funciona para você.<br>
+Porém nas soluções imprimiremos a forma textual, pois é mais conveniente copiar/colar. -->
 
 
-## Add Status and Urgency
+## Adicionar status e urgência
 
-Incidents shall have two more fields `status` and `urgency`, which are 'code lists', i.e. configuration data.
+Os incidentes deverão ter mais dois campos `status` e `urgency`, que são 'listas de códigos', ou seja, dados de configuração.
 
-👉 Add two entities, using the [`sap.common.CodeList`](https://cap.cloud.sap/docs/cds/common#aspect-codelist) aspect.
-- `Status` for the incident's status like _new_, _in process_ etc.
-  - Name its key field `code` instead of `ID`.
-- `Urgency` to denote the priority like _high_, _medium_ etc.
-  - Name its key field `code` instead of `ID`.
+👉 Adicione duas entidades, usando o aspecto [`sap.common.CodeList`](https://cap.cloud.sap/docs/cds/common#aspect-codelist).
+- `Status` para o status do incidente como _new_, _in process_ etc.
+  - Nomeie seu campo-chave como `code` em vez de `ID`.
+- `Urgency` para denotar a prioridade como _high_, _medium_ etc.
+  - Nomeie seu campo-chave como `code` em vez de `ID`.
 
-👉 Add one [association](https://cap.cloud.sap/docs/guides/domain-modeling#associations) to `Incidents` pointing to the each new entity.  The associations shall be _unidirectional_ only, i.e. pointing _from_ `Incidents` to `Status` or `Urgency`, but not in the other direction.
+👉 Adicione uma [associação](https://cap.cloud.sap/docs/guides/domain-modeling#associations) a `Incidents` apontando para cada nova entidade. As associações devem ser apenas _unidirecionais_, ou seja, apontando _de_ `Incidents` para `Status` ou `Urgency`, mas não na outra direção.
 
 <details>
-<summary>See the result:</summary>
+<summary>Veja o resultado:</summary>
 
-In `db/data-model.cds`, add:
+Em `db/data-model.cds`, adicione:
 
 ```cds
 using { sap.common.CodeList } from '@sap/cds/common';
@@ -183,14 +182,14 @@ entity Incidents {
 
 </details>
 
-## Create a CDS Service
+## Crie um serviço CDS
 
-There shall be an API for incidents processors to maintain incidents.
+Deve haver uma API para processadores de incidentes para manter incidentes.
 
-👉 In a new file `srv/processor-service.cds`, create a [CDS service](https://cap.cloud.sap/docs/cds/cdl#service-definitions) that exposes a one-to-one projection on `Incidents`.<br>
+👉 Em um novo arquivo `srv/processor-service.cds`, crie um [serviço CDS](https://cap.cloud.sap/docs/cds/cdl#service-definitions) que expõe um um para um projeção em `Incidents`.<br>
 
 <details>
-<summary>This is how the service should like:</summary>
+<summary>É assim que o serviço deveria ser:</summary>
 
 ```cds
 using { incidents.mgt } from '../db/data-model';
@@ -204,27 +203,27 @@ service ProcessorService {
 
 </details>
 
-## Start the Application
+## Inicie o aplicativo
 
-👉 Run the application:
-- Open a terminal.  Press <kbd>F1</kbd>, type _new terminal_, or use the main menu.
-- In the terminal, execute in the project root folder:
+👉 Execute o aplicativo:
+- Abra um terminal. Pressione <kbd>F1</kbd>, digite _new terminal_ ou use o menu principal.
+- No terminal, execute na pasta raiz do projeto:
 
-  ```sh
-  cds watch
-  ```
+   ```sh
+    cds watch
+   ```
 
-  <details>
-  <summary>See the console output:</summary>
+   <details>
+   <summary>Veja a saída do console:</summary>
 
-  ![Start application, terminal output](assets/StartApp-Terminal.png)
-  </details>
+   ![Iniciar aplicativo, saída do terminal](assets/StartApp-Terminal.png)
+   </details>
 
-  <p>
+   <p>
 
-Take a moment and check the output for what is going on:
+Reserve um momento e verifique o resultado do que está acontecendo:
 
-- The application consists of three `cds` files.  Two are application sources and one comes from the `@sap/cds` library:
+- A aplicação consiste em três arquivos `cds`. Duas são fontes de aplicativos e uma vem da biblioteca `@sap/cds`:
   ```sh
   [cds] - loaded model from 3 file(s):
 
@@ -233,51 +232,51 @@ Take a moment and check the output for what is going on:
     .../@sap/cds/common.cds
   ```
 
-- An in-memory [SQLite database](https://cap.cloud.sap/docs/guides/databases-sqlite) got created.  This holds the application data (which we don't have yet).
+- Um [banco de dados SQLite] na memória (https://cap.cloud.sap/docs/guides/databases-sqlite) foi criado. Ele contém os dados do aplicativo (que ainda não temos).
   ```sh
   [cds] - connect to db > sqlite { database: ':memory:' }
   /> successfully deployed to in-memory database.
   ```
 
-- The CDS service got exposed on this path:
+- O serviço CDS foi exposto neste caminho:
   ```sh
   [cds] - serving ProcessorService { path: '/odata/v4/processor' }
   ```
 
 
-👉 Now <kbd>Ctrl+Click</kbd> on the `http://localhost:4004` link in the terminal.
-- In SAP Business Application Studio, this URL gets automatically transformed to an address like `https://port4004-workspaces-ws-...applicationstudio.cloud.sap/`
-- If you work locally, this would be http://localhost:4004.
+👉 Agora <kbd>Ctrl+Clique</kbd> no link `http://localhost:4004` no terminal.
+- No SAP Business Application Studio, esse URL é automaticamente transformado em um endereço como `https://port4004-workspaces-ws-...applicationstudio.cloud.sap/`
+- Se você trabalha localmente, seria http://localhost:4004.
 
-On the index page, all endpoints are listed along with the entities that they expose.
+Na página de índice, todos os terminais são listados junto com as entidades que eles expõem.
 
-![Index page with list of endpoints and entities](assets/IndexPage.png)
+![Página de índice com lista de endpoints e entidades](assets/IndexPage.png)
 
-The _Fiori preview_ link you will use later.
+O link _Fiori preview_ você usará mais tarde.
 
-👉 Do you know why the service URL path is `/processor`?  What's the `$metadata` link?
+👉 Você sabe por que o caminho da URL do serviço é `/processor`? Qual é o link `$metadata`?
 
 <details>
-<summary>Here is why:</summary>
+<summary>Aqui está o porquê:</summary>
 
-You named the CDS service `ProcessorService`, and the runtime system infers the URL `processor` by stripping off `Service`.  You can configure this explicitly using the [`@path` annotation](https://cap.cloud.sap/docs/node.js/cds-serve#path).
+Você nomeou o serviço CDS como `ProcessorService`, e o sistema de tempo de execução infere a URL `processor` removendo `Service`. Você pode configurar isso explicitamente usando a [anotação `@path`](https://cap.cloud.sap/docs/node.js/cds-serve#path).
 
-The `$metadata` URL serves the metadata document required for the [OData protocol](https://cap.cloud.sap/docs/advanced/odata).  You will soon see OData in action.
+A URL `$metadata` fornece o documento de metadados necessário para o [protocolo OData](https://cap.cloud.sap/docs/advanced/odata). Em breve você verá o OData em ação.
 
 </details>
 
-## Add Sample Data
+## Adicionar dados de exemplo
 
-Add some test data to work with.
+Adicione alguns dados de teste para trabalhar.
 
-👉 Create empty **csv files** for all entities.  In a new terminal, run:
+👉 Crie **arquivos csv** vazios para todas as entidades. Em um novo terminal, execute:
 
 ```sh
 cds add data
 ```
 
 
-As soon as they are there, `cds watch` finds and deploys them to the database. Check the console output:
+Assim que eles estiverem lá, o `cds watch` os localiza e os implanta no banco de dados. Verifique a saída do console:
 
 ```sh
 [cds] - connect to db > sqlite { database: ':memory:' }
@@ -289,11 +288,11 @@ As soon as they are there, `cds watch` finds and deploys them to the database. C
 > init from db/data/incidents.mgt-Conversations.csv
 ```
 
-> Note how the files names match the entity names.
+> Observe como os nomes dos arquivos correspondem aos nomes das entidades.
 
-Now fill in some content:
+Agora preencha algum conteúdo:
 
-👉 For the two code lists, **add csv records in the terminal** real quick:
+👉 Para as duas listas de códigos, **adicione registros csv no terminal** bem rápido:
 
 ```sh
 cat << EOF > db/data/incidents.mgt-Status.csv
@@ -311,21 +310,21 @@ L,Low
 EOF
 ```
 
-👉 For the `Incidents` and `Conversations` csv files, use the **sample data editor** to fill in some data.
-- Double click on the `db/data/incidents.mgt-Incidents.csv` file in the explorer tree.
-- In the editor, add maybe 10 rows.  Use the `Number of rows` field and click `Add` to create the records.
-- Also create records for the `db/data/incidents.mgt-Conversations` file. The editor automatically fills the `incidents_ID` foreign key.
+👉 Para os arquivos csv `Incidents` e `Conversations`, use o **editor de dados de exemplo** para preencher alguns dados.
+- Clique duas vezes no arquivo `db/data/incidents.mgt-Incidents.csv` na árvore do explorador.
+- No editor, adicione talvez 10 linhas. Utilize o campo `Número de linhas` e clique em `Adicionar` para criar os registros.
+- Crie também registros para o arquivo `db/data/incidents.mgt-Conversations`. O editor preenche automaticamente a chave estrangeira `incidents_ID`.
 
-👉 On the applications index page, click on the `Incidents` link which runs a `GET /odata/v4/processor/Incidents` request.<br>
+👉 Na página de índice dos aplicativos, clique no link `Incidents` que executa uma solicitação `GET /odata/v4/processor/Incidents`.<br>
 
 
-## Add a Simple UI
+## Adicione uma UI simples
 
-👉 Click on _Incidents_ > _[Fiori Preview](https://cap.cloud.sap/docs/advanced/fiori#sap-fiori-preview)_ on the index page of the application.  This opens an SAP Fiori Elements application that was created on the fly.  It displays the entity's data in a list.
+👉 Clique em _Incidents_ > _[Fiori Preview](https://cap.cloud.sap/docs/advanced/fiori#sap-fiori-preview)_ na página de índice da aplicação. Isso abre um aplicativo SAP Fiori Elements que foi criado dinamicamente. Ele exibe os dados da entidade em uma lista.
 
-The list seems to be empty although there is data available .  This is because no columns are configured.  Let's change that.
+A lista parece estar vazia embora existam dados disponíveis. Isso ocorre porque nenhuma coluna está configurada. Vamos mudar isso.
 
-👉 Add a file `app/annotations.cds` with this content:
+👉 Adicione um arquivo `app/annotations.cds` com este conteúdo:
 
 ```cds
 using { ProcessorService as service } from '../srv/processor-service';
@@ -357,33 +356,33 @@ annotate service.Incidents with @(
 );
 ```
 
-which creates 3 columns:
+que cria 3 colunas:
 
-![Fiori list page with 3 columns](assets/Fiori-simple.png)
+![Página da lista Fiori com 3 colunas](assets/Fiori-simple.png)
 
-There is even a preconfigured label for the `modifiedAt` column.<br>
-👉 Do you know how to look them up?  Hint: use editor features.
+Existe até um rótulo pré-configurado para a coluna `modifiedAt`.<br>
+👉 Você sabe como procurá-los? Dica: use os recursos do editor.
 
 <details>
-<summary>See how:</summary>
+<summary>Veja como:</summary>
 
-On the `managed` aspect in `db/data-model.cds`, select _Go to References_ from the context menu.  Expand `common.cds` in the right-hand tree and check the `annotate managed` entries until you see the `@title` annotations:
+No aspecto `managed` em `db/data-model.cds`, selecione _Ir para Referências_ no menu de contexto. Expanda `common.cds` na árvore à direita e verifique as entradas `annotate managed` até ver as anotações `@title`:
 
-![Dialog with all references of the managed aspect](assets/Editor-GoToReferences.png)
+![Diálogo com todas as referências do aspecto gerenciado](assets/Editor-GoToReferences.png)
 
-The actual strings seem to be fetched from a resource bundle that is addressed with a `{i18n>...}` key.  See the [localization guide](https://cap.cloud.sap/docs/guides/i18n) for how this works.
+Os textos atuais são obtidos de um pacote de recursos que é endereçado com uma chave `{i18n>...}`. Consulte o [guia de localização](https://cap.cloud.sap/docs/guides/i18n) para saber como isso funciona.
 
 </details>
 
 <p>
 
-The label for the `title` column seems to be wrong, though.<br>
-👉 Fix it by adding the appropriate [CDS annotation](https://cap.cloud.sap/docs/advanced/fiori#prefer-title-and-description) to the `Incidents.title` element.
+O rótulo da coluna `title` parece estar errado.<br>
+👉 Corrija-o adicionando a [anotação CDS](https://cap.cloud.sap/docs/advanced/fiori#prefer-title-and-description) apropriada ao elemento `Incidents.title`.
 
 <details>
-<summary>This is how you can do it:</summary>
+<summary>É assim que você pode fazer isso:</summary>
 
-Add a `@title:'Title'` annotation to the `Incidents` definition.  Make sure to place it correctly before the semicolon.  Watch out for syntax errors.
+Adicione uma anotação `@title:'Title'` à definição de `Incidents`. Certifique-se de colocá-lo corretamente antes do ponto e vírgula. Cuidado com erros de sintaxe.
 
 ```cds
 entity Incidents : cuid, managed {
@@ -392,15 +391,15 @@ entity Incidents : cuid, managed {
 }
 ```
 
-Note that annotations can be added at [different places in the CDS syntax](https://cap.cloud.sap/docs/cds/cdl#annotations).
+Observe que as anotações podem ser adicionadas em [locais diferentes na sintaxe do CDS](https://cap.cloud.sap/docs/cds/cdl#annotations).
 
 </details>
 
-## Add Business Logic
+## Adicionar lógica de negócios
 
-Let's add some logic to the application.  When an incident is created with _urgent_ in its title, it shall set its urgency to 'High'.
+Vamos adicionar um pouco de lógica ao aplicativo. Quando um incidente é criado com _urgent_ no título, sua urgência deve ser definida como 'Alta'.
 
-👉 Add a file `srv/processor-service.js` with this content:
+👉 Adicione um arquivo `srv/processor-service.js` com este conteúdo:
 
 ```js
 const cds = require('@sap/cds')
@@ -424,7 +423,7 @@ class ProcessorService extends cds.ApplicationService {
 module.exports = ProcessorService
 ```
 
-Note how the `js` file is named the same as the `cds` file.  This is how the framework finds the implementation.  You can can see this in the output of `cds watch`, where it prints the `impl` value:
+Observe como o arquivo `js` tem o mesmo nome do arquivo `cds`. É assim que a estrutura encontra a implementação. Você pode ver isso na saída de `cds watch`, onde ele imprime o valor `impl`:
 
 ```sh
 ...
@@ -432,14 +431,14 @@ Note how the `js` file is named the same as the `cds` file.  This is how the fra
 ...
 ```
 
-> Don't see the `js` file listed there?  Check its spelling!
+> Não vê o arquivo `js` listado lá? Verifique a ortografia!
 
-👉 Complete the code with the actual logic: check that the `title` includes `urgent` and in that case set its `urgency code` to `H`.
-- Handle `urgent` and `Urgent` in the same way.
-- Also be robust in the case that there is no title given.
+👉 Complete o código com a lógica real: verifique se o `title` inclui `urgent` e nesse caso defina seu `urgency code` para `H`.
+- Trate `urgent` e `Urgent` da mesma maneira.
+- Também seja robusto caso não haja título atribuído.
 
 <details>
-<summary>Solution:</summary>
+<summary>Solução:</summary>
 
 ```js
           if (incident.title?.toLowerCase().includes('urgent')) {
@@ -450,30 +449,30 @@ Note how the `js` file is named the same as the `cds` file.  This is how the fra
 
 <p>
 
-👉 Now test the logic by creating an incident through the UI.  Add the word _urgent_ in the title.  After saving it, go back to the list.  You should see the urgency set to _High_.
+👉 Agora teste a lógica criando um incidente por meio da UI. Adicione a palavra _urgent_ no título. Depois de salvá-lo, volte para a lista. Você deverá ver a urgência definida como _High_.
 
-## Debug the Code (Optional)
+## Depure o código (opcional)
 
-If you want to debug the code using the built-in visual Javascript debugger, do this:
-- Kill the running `cds watch` process.
-- Press <kbd>F1</kbd>, type  _debug terminal_, select _Javascript: Debug Terminal_
-- In this terminal, start `cds watch` as usual.  The debugger starts and attaches to this process.
-- At the top in the middle of the window, see the floating panel with which you can control the debugger and do step operations.<br>
-  ![Debugger controls](assets/DebuggerControls.png)
-- Set a breakpoint in the source within the `this.before(...` function. Do this by double-clicking next to the line number.<br>
-  <details>
-  <summary>Quick question: in this situation, why wouldn't the debugger halt outside of this function?</summary>
+Se você deseja depurar o código usando o depurador visual Javascript integrado, faça o seguinte:
+- Elimine o processo `cds watch` em execução.
+- Pressione <kbd>F1</kbd>, digite _debug terminal_, selecione _Javascript: Debug Terminal_
+- Neste terminal, inicie `cds watch` normalmente. O depurador é iniciado e anexado a esse processo.
+- Na parte superior, no meio da janela, veja o painel flutuante com o qual você pode controlar o depurador e realizar operações passo a passo.<br>
+   ![Controles do depurador](assets/DebuggerControls.png)
+- Defina um ponto de interrupção na fonte dentro da função `this.before(...`. Faça isso clicando duas vezes ao lado do número da linha.<br>
+   <detalhes>
+   <summary>Pergunta rápida: nesta situação, por que o depurador não pararia fora desta função?</summary>
 
-  Because the `before()` function is a [request handler](https://cap.cloud.sap/docs/node.js/core-services#srv-on-before-after), and it's only such request-handling code that can be debugged now.<br>
-  The code above and below is [bootstrap](https://cap.cloud.sap/docs/node.js/cds-server) code that can only be debugged if you either set the breakpoint earlier or make the debugger halt right when the server process gets started.
-  </details>
-- Now create a new incident.  The UI freezes because the debugger has stopped.
-- For variables, press <kbd>F1</kbd>, type  _variables_, select _Run and Debug: Focus on Variables View_.
-- After having inspected the variables, don't forget to continue execution using the debug control panel, otherwise the application UI will not react (and timeout eventually).
+   Porque a função `before()` é um [manipulador de solicitação](https://cap.cloud.sap/docs/node.js/core-services#srv-on-before-after), e é apenas esse tipo de solicitação- lidar com código que pode ser depurado agora.<br>
+   O código acima e abaixo é um código [bootstrap](https://cap.cloud.sap/docs/node.js/cds-server) que só pode ser depurado se você definir o ponto de interrupção anteriormente ou fazer o depurador parar logo quando o processo do servidor é iniciado.
+   </detalhes>
+- Agora crie um novo incidente. A UI congela porque o depurador foi interrompido.
+- Para variáveis, pressione <kbd>F1</kbd>, digite _variables_, selecione _Run and Debug: Focus on Variables View_.
+- Depois de inspecionar as variáveis, não se esqueça de continuar a execução usando o painel de controle de depuração, caso contrário a UI do aplicativo não reagirá (e eventualmente atingirá o tempo limite).
 
-## Add Another Service
+## Adicionar outro serviço
 
-In the service above, you have used only the very minimal form of a [CDS projection](https://cap.cloud.sap/docs/cds/cdl#views-and-projections), which basically does a one-to-one exposure of an entity to the API surface:
+No serviço acima, você usou apenas a forma mínima de uma [projeção CDS](https://cap.cloud.sap/docs/cds/cdl#views-and-projections), que basicamente faz uma -uma exposição de uma entidade à superfície da API:
 
 ```cds
 service ProcessorService {
@@ -481,23 +480,23 @@ service ProcessorService {
 }
 ```
 
-However, projections go way beyond this and provide powerful means to express queries for specific application scenarios.
-- When mapped to relational databases, such projections are in fact translated to SQL views.
-- You will soon see non-DB uses of projections.
+No entanto, as projeções vão muito além disso e fornecem meios poderosos para expressar consultas para cenários de aplicação específicos.
+- Quando mapeadas para bancos de dados relacionais, tais projeções são de fato traduzidas para visualizações SQL.
+- Em breve você verá usos de projeções não pertencentes ao banco de dados.
 
-👉 Now explore projections and services.  Add a 'statistics service' that shows
-- Incidents' `title`
-- Their `status`, but showing `New` instead of `N` etc.  Hint: use a [path expression](https://cap.cloud.sap/docs/cds/cql#path-expressions) for the `name`.
-- Only urgent incidents.  Hint: use a [`where` condition](https://cap.cloud.sap/docs/cds/cql).
+👉 Agora explore projeções e serviços. Adicione um 'serviço de estatísticas' que mostre
+- `Title` dos incidentes
+- Seu `status`, mas mostrando `New` em vez de `N` etc. Dica: use uma [expressão de caminho](https://cap.cloud.sap/docs/cds/cql#path-expressions) para o `name`.
+- Apenas incidentes urgentes. Dica: use uma [condição `where`](https://cap.cloud.sap/docs/cds/cql).
 
-The result shall be available at `/odata/v4/statistics/UrgentIncidents`. What's the name of the CDS service that matches to this URL?
+O resultado estará disponível em `/odata/v4/statistics/UrgentIncidents`. Qual é o nome do serviço CDS que corresponde a este URL?
 
-Also, use the editor's code completion that guides you along the syntax.<br>
+Além disso, use o preenchimento de código do editor que o orienta ao longo da sintaxe.<br>
 
 <details>
-<summary>Solution:</summary>
+<summary>Solução:</summary>
 
-In a separate `srv/statistics-service.cds` file, add this:
+Em um arquivo `srv/statistics-service.cds` separado, adicione isto:
 
 ```cds
 using { incidents.mgt } from '../db/data-model';
@@ -515,12 +514,12 @@ service StatisticsService {
 
 <p>
 
-👉 If you got this, add these fields with more advanced syntax:
-- `modified` :  a concatenated string from `modifiedAt` and `modifiedBy` (use the `str1 || str2` syntax)
-- `conversationCount` :  a count for the number of conversation messages.  Hint: SQL has a `count()` function.  Don't forget the `group by` clause.
+👉 Se você conseguiu isso, adicione estes campos com sintaxe mais avançada:
+- `modified` : uma string concatenada de `modifiedAt` e `modifiedBy` (use a sintaxe `str1 || str2`)
+- `conversationCount` : uma contagem do número de mensagens de conversa. Dica: SQL tem uma função `count()`. Não se esqueça da cláusula `group by`.
 
-<details>
-<summary>Solution:</summary>
+<detalhes>
+<summary>Solução:</summary>
 
 ```cds
 using { incidents.mgt } from '../db/data-model';
@@ -538,75 +537,74 @@ service StatisticsService {
   group by ID              // needed for count()
 }
 ```
-</details>
+</detalhes>
 
 <p>
 
-Check on `/odata/v4/statistics/UrgentIncidents` for the results.  Note that they will vary depending on your sample data.
+Verifique em `/odata/v4/statistics/UrgentIncidents` os resultados. Observe que eles irão variar dependendo dos dados da sua amostra.
 
-Remember: you got all of this power without a single line of (Javascript or Java) code!
+Lembre-se: você tem todo esse poder sem uma única linha de código (Javascript ou Java)!
 
+## Testar recursos OData (opcional)
 
-## Test OData Features (Optional)
+Vamos inspecionar alguns dos recursos integrados do [OData](https://cap.cloud.sap/docs/advanced/odata).
 
-Let's inspect some of the built-in features of [OData](https://cap.cloud.sap/docs/advanced/odata).
+👉 No navegador, anexe ao URL do serviço `.../odata/v4/processor/Incidents` para que você possa:
+- listar incidentes
+- com suas mensagens de conversa,
+- limitar a lista a `5` entradas,
+- mostrando apenas o campo `title`,
+- classificando em ordem alfabética ao longo do `title`
 
-👉 In the browser, append to the service URL `.../odata/v4/processor/Incidents` so that you can:
-- list incidents
-- with their conversation messages,
-- limiting the list to `5` entries,
-- only showing the `title` field,
-- sorting alphabetically along `title`
+Como você pode fazer isso usando opções de consulta do [OData](https://cap.cloud.sap/docs/advanced/odata) como `$expand` etc.?
+<detalhes>
+<summary>É assim:</summary>
 
-How can you do that using [OData's](https://cap.cloud.sap/docs/advanced/odata) query options like `$expand` etc.?
-<details>
-<summary>This is how:</summary>
-
-Add
+Adicionar
 ```
 ?$select=title&$orderby=title&$top=5&$expand=conversations
 ```
 
-to the URL.
+para o URL.
 
-</details>
+</detalhes>
 
-## Inspect the Database (Optional)
+## Inspecione o banco de dados (opcional)
 
-Upon deployment to the database, CAP creates SQL DDL statements to create the tables and views for your entities.
+Após a implantação no banco de dados, o CAP cria instruções SQL DDL para criar tabelas e visualizações para suas entidades.
 
-👉 On the `db/data-model.cds` file, select `CDS Preview > Preview as sql` from the editor's context menu.  This opens a side panel with the SQL statements.
+👉 No arquivo `db/data-model.cds`, selecione `CDS Preview > Preview as sql` no menu de contexto do editor. Isso abre um painel lateral com as instruções SQL.
 
 <details>
-<summary>See how this looks like:</summary>
+<summary>Veja como fica:</summary>
 
-![SQL preview for data model](assets/PreviewAsSQL.png)
+![Visualização SQL para modelo de dados](assets/PreviewAsSQL.png)
 
 </details>
 
 <p>
 
-👉 You can do the same in the terminal with
+👉 Você pode fazer o mesmo no terminal com
 ```sh
 cds compile db --to sql
 ```
 
-👉 Now do the same on file `srv/statistics-service.cds`.  What is different in the result?  Can you explain where the new SQL statements come from?
+👉 Agora faça o mesmo no arquivo `srv/statistics-service.cds`. O que há de diferente no resultado? Você pode explicar de onde vêm as novas instruções SQL?
 
 <details>
-<summary>This is why:</summary>
+<summary>É por isso:</summary>
 
-For each CDS projection, an SQL view is created that captures the queries from the projections.  This is why you see a lot more `CREATE VIEW ` statements.
+Para cada projeção CDS, é criada uma visualização SQL que captura as consultas das projeções. É por isso que você vê muito mais instruções `CREATE VIEW`.
 
 </details>
 
-## Summary
+## Resumo
 
-You've now created a basic version of the Incidents Management Application.  Still it's very powerful as it:
+Agora você criou uma versão básica do aplicativo de gerenciamento de incidentes. Ainda assim, é muito poderoso porque:
 
-- Exposes **rich API's** and OData metadata.  You will see OData clients like SAP Fiori Elements UI soon.
-- Deploys to a **database out-of-the-box**, incl. data files.
-- Let's you stay **focused on the domain model** without the need to write imperative code for simple CRUD requests.
-- Keeps **boilerplate files to the minimum**.  Just count the few files in the project.
+- Expõe **APIs ricas** e metadados OData. Você verá clientes OData como SAP Fiori Elements UI em breve.
+- Implanta em um **banco de dados pronto para uso**, incl. arquivos de dados.
+- Vamos manter **concentrado no modelo de domínio** sem a necessidade de escrever código imperativo para solicitações CRUD simples.
+- Mantém **arquivos padrão ao mínimo**. Basta contar os poucos arquivos do projeto.
 
-Now continue to [exercise 2](../ex2/README.md), where you will extend the application with remote capabilities.
+Agora continue para o [exercício 2](../ex2/README.md), onde você estenderá o aplicativo com recursos remotos.
