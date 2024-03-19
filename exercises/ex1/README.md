@@ -460,12 +460,12 @@ Se você deseja depurar o código usando o depurador visual Javascript integrado
 - Na parte superior, no meio da janela, veja o painel flutuante com o qual você pode controlar o depurador e realizar operações passo a passo.<br>
    ![Controles do depurador](assets/DebuggerControls.png)
 - Defina um ponto de interrupção na fonte dentro da função `this.before(...`. Faça isso clicando duas vezes ao lado do número da linha.<br>
-   <detalhes>
+   <details>
    <summary>Pergunta rápida: nesta situação, por que o depurador não pararia fora desta função?</summary>
 
    Porque a função `before()` é um [manipulador de solicitação](https://cap.cloud.sap/docs/node.js/core-services#srv-on-before-after), e é apenas esse tipo de solicitação- lidar com código que pode ser depurado agora.<br>
    O código acima e abaixo é um código [bootstrap](https://cap.cloud.sap/docs/node.js/cds-server) que só pode ser depurado se você definir o ponto de interrupção anteriormente ou fazer o depurador parar logo quando o processo do servidor é iniciado.
-   </detalhes>
+   </details>
 - Agora crie um novo incidente. A UI congela porque o depurador foi interrompido.
 - Para variáveis, pressione <kbd>F1</kbd>, digite _variables_, selecione _Run and Debug: Focus on Variables View_.
 - Depois de inspecionar as variáveis, não se esqueça de continuar a execução usando o painel de controle de depuração, caso contrário a UI do aplicativo não reagirá (e eventualmente atingirá o tempo limite).
@@ -518,7 +518,7 @@ service StatisticsService {
 - `modified` : uma string concatenada de `modifiedAt` e `modifiedBy` (use a sintaxe `str1 || str2`)
 - `conversationCount` : uma contagem do número de mensagens de conversa. Dica: SQL tem uma função `count()`. Não se esqueça da cláusula `group by`.
 
-<detalhes>
+<details>
 <summary>Solução:</summary>
 
 ```cds
@@ -537,7 +537,7 @@ service StatisticsService {
   group by ID              // needed for count()
 }
 ```
-</detalhes>
+</details>
 
 <p>
 
@@ -557,7 +557,7 @@ Vamos inspecionar alguns dos recursos integrados do [OData](https://cap.cloud.sa
 - classificando em ordem alfabética ao longo do `title`
 
 Como você pode fazer isso usando opções de consulta do [OData](https://cap.cloud.sap/docs/advanced/odata) como `$expand` etc.?
-<detalhes>
+<details>
 <summary>É assim:</summary>
 
 Adicionar
@@ -567,7 +567,7 @@ Adicionar
 
 para o URL.
 
-</detalhes>
+</details>
 
 ## Inspecione o banco de dados (opcional)
 
