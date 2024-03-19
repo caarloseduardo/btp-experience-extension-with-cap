@@ -41,12 +41,12 @@ Agora é necessário um código para replicar o registro do cliente sempre que u
   })
 ```
 
-👉 Agora crie um incidente na IU. Não se esqueça de selecionar um cliente através da ajuda de valor.<br>
+👉 Agora crie um incidente na UI. Não se esqueça de selecionar um cliente através da ajuda de valor.<br>
 No log, você pode ver a linha `>> Atualizando cliente`, confirmando que a replicação acontece.
 
 ## Teste sem UI
 
-Com o [cliente REST para VS Code](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), você pode testar convenientemente o mesmo fluxo sem a IU.
+Com o [cliente REST para VS Code](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), você pode testar convenientemente o mesmo fluxo sem a UI.
 
 👉 Crie um arquivo `tests.http` com este conteúdo:
 
