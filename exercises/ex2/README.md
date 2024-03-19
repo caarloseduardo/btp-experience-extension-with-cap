@@ -1,53 +1,53 @@
-# Exercise 2 - Service Integration with SAP S/4 HANA
+# Exercício 2 - Integração de serviços com SAP S/4 HANA
 
-In this exercise, you will add `Customers` to `Incidents` to specify who created an incident.
+Neste exercício, você adicionará `Customers` a `Incidents` para especificar quem criou um incidente.
 
-![Domain model](../ex1/assets/domain.drawio.svg)
+![Modelo de domínio](../ex1/assets/domain.drawio.svg)
 
-Customer data is available in _SAP S/4HANA Cloud_ as part of the _Business Partners_ Service.  You will connect to this service from the _Incidents Management_ application.
+Os dados do cliente estão disponíveis no _SAP S/4HANA Cloud_ como parte do serviço _Business Partners_. Você se conectará a este serviço a partir do aplicativo _Gerenciamento de Incidentes_.
 
 
-## Checkout Base Version of the Application
+## Confira a versão base do aplicativo
 
-To give you a consistent start for the upcoming tasks, there is a start version of the application available.  It basically matches to what you did in the last exercise plus has some UI bits and pieces.
+Para lhe proporcionar um início consistente para as próximas tarefas, há uma versão inicial do aplicativo disponível. Basicamente corresponde ao que você fez no último exercício, além de ter alguns pedaços de UI.
 
-> We recommend to start from this branch. You can save your previous work by pushing it to a Github repository, for example.
+> Recomendamos começar neste ramo. Você pode salvar seu trabalho anterior enviando-o para um repositório do Github, por exemplo.
 
-👉 Clone this repository and checkout the `start` branch:
+👉 Clone este repositório e verifique o branch `start`:
 
 ```sh
 cd /home/user/projects
-git clone -b start https://github.com/SAP-samples/teched2023-AD264
-cd teched2023-AD264
+git clone -b start https://github.com/caarloseduardo/btp-experience-extension-with-cap
+cd btp-experience-extension-with-cap
 npm ci  # installs app's dependencies
 ```
 
-👉 Then open the new folder `teched2023-AD264` in a new window:
+👉 Em seguida, abra a nova pasta `btp-experience-extension-with-cap` em uma nova janela:
 
-![Open folder](assets/BAS-OpenFolder.png)
+![Abrir pasta](assets/BAS-OpenFolder.png)
 
-![Select folder](assets/BAS-OpenFolder-2.png)
+![Selecionar pasta](assets/BAS-OpenFolder-2.png)
 
-> Alternatively, you may use the command _SAP Business Application Studio: Git Clone_
+> Alternativamente, você pode usar o comando _SAP Business Application Studio: Git Clone_
 
 
-## Add Integration Package
+## Adicionar pacote de integração
 
-Luckily, you don't need to implement the integration to SAP S/4HANA from scratch, but you can use an integration package.<br>
-Such packages could come from any provider: SAP, partners, a team in your company etc.  They can be a published to npmjs.com or provided as simple tar files from a remote file server, or a local folder.
+Felizmente, você não precisa implementar a integração ao SAP S/4HANA do zero, mas pode usar um pacote de integração.<br>
+Esses pacotes podem vir de qualquer provedor: SAP, parceiros, uma equipe da sua empresa, etc. Eles podem ser publicados em npmjs.com ou fornecidos como arquivos tar simples de um servidor de arquivos remoto ou de uma pasta local.
 
-For expediency, we use a `git` dependency to a branch in this repo as source of the package.
+Por conveniência, usamos uma dependência `git` para uma ramificação neste repositório como fonte do pacote.
 
-👉 In the terminal, run this to download the package:
+👉 No terminal, execute isto para baixar o pacote:
 
 ```sh
 npm add git+https://github.com/SAP-samples/teched2023-AD264#bupa-integration-package
 ```
 
-👉 Let's see what got installed.  Expand the folder `node_modules/s4-bupa-integration` (in the file explorer or in the terminal):
+👉 Vamos ver o que foi instalado. Expanda a pasta `node_modules/s4-bupa-integration` (no explorador de arquivos ou no terminal):
 
 ```
-node_modules/s4-bupa-integration
+node_modules/s4-bupa-integração
 ├── bupa
 │   ├── API_BUSINESS_PARTNER.cds
 │   ├── API_BUSINESS_PARTNER.csn
@@ -59,22 +59,22 @@ node_modules/s4-bupa-integration
 └── package.json
 ```
 
-👉 Open file `API_BUSINESS_PARTNER.cds` (not the `.csn` file)
-- Find the outline view in the lower left corner of the window.  Alternatively press <kbd>F1></kbd>, type _outline_ and select _Explorer: Focus on Outline View_.
-- Use the view to make yourself familiar with which entities there are. <br>
-  ![Outline view for API_BUSINESS_PARTNER.cds file](assets/Outline-CDS.png)
+👉 Abra o arquivo `API_BUSINESS_PARTNER.cds` (não o arquivo `.csn`)
+- Encontre a visualização do esboço no canto inferior esquerdo da janela. Alternativamente, pressione <kbd>F1></kbd>, digite _outline_ e selecione _Explorer: Focus on Outline View_.
+- Use a visualização para se familiarizar com quais entidades existem. <br>
+  ![Visualização de esboço do arquivo API_BUSINESS_PARTNER.cds](assets/Outline-CDS.png)
 
-  Quite an API, right?  Don't worry, we will restrict it soon to what we need in the application.
+  Uma API e tanto, certo? Não se preocupe, em breve restringiremos ao que precisamos no aplicativo.
 
-👉 First, to make the application's CDS model use the package, add this line to `db/data-model.cds`:
+👉 Primeiro, para fazer com que o modelo CDS da aplicação utilize o pacote, adicione esta linha em `db/data-model.cds`:
 
 ```cds
 using { API_BUSINESS_PARTNER as S4 } from 's4-bupa-integration/bupa';
 ```
 
-> Note how the path in `from 's4-bupa-integration/bupa'` matches to the file path in `node_modules`.
+> Observe como o caminho em `from 's4-bupa-integration/bupa'` corresponde ao caminho do arquivo em `node_modules`.
 
-👉 Register the package in the application configuration.  Add this top-level to `package.json` (pay attention to JSON syntax errors):
+👉 Cadastre o pacote na configuração do aplicativo. Adicione este nível superior ao `package.json` (preste atenção aos erros de sintaxe JSON):
 
 ```jsonc
   "cds": {
@@ -88,21 +88,21 @@ using { API_BUSINESS_PARTNER as S4 } from 's4-bupa-integration/bupa';
 ```
 
 
-## Service Adaptation
+## Adaptação de serviço
 
-For the first version of the application, you only need two fields from the `A_BusinessPartner` entity. To do this, you create a [_projection_](https://cap.cloud.sap/docs/guides/using-services#model-projections) on the external service. Since in this example, you are interested in business partners in a role as customer, you use the name `Customers` for your projection.
+Para a primeira versão da aplicação, são necessários apenas dois campos da entidade `A_BusinessPartner`. Para fazer isso, crie uma [_projection_](https://cap.cloud.sap/docs/guides/using-services#model-projections) no serviço externo. Como neste exemplo você está interessado em parceiros de negócios na função de cliente, use o nome `Customers` para sua projeção.
 
-👉 Add `Customers`:
-- Create a `Customers` entity as a projection to the `A_BusinessPartner` entity that you have just imported. It shall have two fields
-  - `ID` for the remote `BusinessPartner`
-  - `name` for the remote `BusinessPartnerFullName`
-- Add an association from `Incidents` to (one) `Customer`
-- Expose the `Customers` entity similar to `Incidents`
+👉 Adicionar `Customers`:
+- Crie uma entidade `Customers` como projeção para a entidade `A_BusinessPartner` que você acabou de importar. Deve ter dois campos
+   - `ID` para o `BusinessPartner` remoto
+   - `name` para o `BusinessPartnerFullName` remoto
+- Adicione uma associação de `Incidents` a (um) `Customer`
+- Expor a entidade `Customers` semelhante a `Incidents`
 
 <details>
-<summary>This is how it's done:</summary>
+<summary>É assim que se faz:</summary>
 
-Add this to `db/data-model.cds`:
+Adicione isto a `db/data-model.cds`:
 
 ```cds
 entity Customers   as projection on S4.A_BusinessPartner {
@@ -111,7 +111,7 @@ entity Customers   as projection on S4.A_BusinessPartner {
 }
 ```
 
-Then add:
+Em seguida, adicione:
 
 ```cds
 extend Incidents with {
@@ -119,7 +119,7 @@ extend Incidents with {
 }
 ```
 
-In `srv/processor-service.cds`, add this line:
+Em `srv/processor-service.cds`, adicione esta linha:
 
 ```cds
 extend service ProcessorService with {
@@ -127,14 +127,13 @@ extend service ProcessorService with {
 }
 ```
 
-Again, you could have added these new fields and entities to the original definitions.  This way though, it's easier for you to copy.  Also, it shows you how to add things in a 'modification free' way.
+Novamente, você poderia ter adicionado esses novos campos e entidades às definições originais. Dessa forma, porém, é mais fácil copiar. Além disso, mostra como adicionar coisas de uma forma “livre de modificações”.
 
 </details>
 
+## Teste com serviços simulados
 
-## Test with Mocked Services
-
-👉 Run `cds watch` again and check its ouput. You find the information about what's going on:
+👉 Execute `cds watch` novamente e verifique sua saída. Você encontra as informações sobre o que está acontecendo:
 
 ```sh
 ...
@@ -146,51 +145,51 @@ Again, you could have added these new fields and entities to the original defini
 }
 ```
 
-You see that
+Você viu isso
 
-- The external `API_BUSINESS_PARTNER` is mocked, i.e. served in the application although in production it would come from remote. This is because we haven't specified yet how to connect it to a real remote data source.
-- A CSV file `.../data/API_BUSINESS_PARTNER-A_BusinessPartner.csv` with mock data got deployed.<br>Where does it come from?  Yes, the integration package.  See the file tree from the beginning where it's listed.
+- O `API_BUSINESS_PARTNER` externo é simulado, ou seja, servido na aplicação embora em produção venha de forma remota. Isso ocorre porque ainda não especificamos como conectá-lo a uma fonte de dados remota real.
+- Um arquivo CSV `.../data/API_BUSINESS_PARTNER-A_BusinessPartner.csv` com dados simulados foi implantado.<br>De onde ele vem? Sim, o pacote de integração. Veja a árvore de arquivos desde o início onde está listada.
 
-> `cds watch` runs in a 'mock mode' by default.  In production, this won't happen, as the application is started with `cds-serve`.  See the [documentation](https://cap.cloud.sap/docs/guides/extensibility/composition#testing-locally) for how `cds watch` binds to services.
+> `cds watch` roda em 'modo simulado' por padrão. Em produção, isso não acontecerá, pois a aplicação é iniciada com `cds-serve`. Consulte a [documentação](https://cap.cloud.sap/docs/guides/extensibility/composition#testing-locally) para saber como o `cds watch` se vincula aos serviços.
 
-👉 Go the home page of the application (the one listing all the service endpoints).<br>
+👉 Acesse a página inicial do aplicativo (aquela que lista todos os endpoints de serviço).<br>
 
-You can see the `/odata/v4/api-business-partner` service with all its entities under _Service Endpoints_.
-Data is available at `/odata/v4/api-business-partner/A_BusinessPartner`.
+Você pode ver o serviço `/odata/v4/api-business-partner` com todas as suas entidades em _Service Endpoints_.
+Os dados estão disponíveis em `/odata/v4/api-business-partner/A_BusinessPartner`.
 
-![Business Partner in endpoint list](./assets/api-business-partner-service.png)
+![Parceiro de negócios na lista de endpoints](./assets/api-business-partner-service.png)
 
-## Delegate calls to remote system
+## Delegar chamadas para o sistema remoto
 
-To make requests for `Customers` work for real, you need to redirect them to the remote system.
+Para fazer com que as solicitações de `Customers` funcionem de verdade, você precisa redirecioná-los para o sistema remoto.
 
-👉 In file `srv/processor-service.js`, add this content to the `init` function:
+👉 No arquivo `srv/processor-service.js`, adicione este conteúdo à função `init`:
 
 ```js
-    // connect to S4 backend
-    const S4bupa = await cds.connect.to('API_BUSINESS_PARTNER')
-    // delegate reads for Customers to remote service
-    this.on('READ', 'Customers', async (req) => {
-      console.log(`>> delegating '${req.target.name}' to S4 service...`, req.query)
-      const result = await S4bupa.run(req.query)
-      return result
-    })
+  // connect to S4 backend
+  const S4bupa = await cds.connect.to('API_BUSINESS_PARTNER')
+  // delegate reads for Customers to remote service
+  this.on('READ', 'Customers', async (req) => {
+    console.log(`>> delegating '${req.target.name}' to S4 service...`, req.query)
+    const result = await S4bupa.run(req.query)
+    return result
+  })
 ```
 
-> Note how you don't need to code against any low-level layer here.  It's just the service name `API_BUSINESS_PARTNER` that is relevant.  The rest is wired up behind the scenes or outside of the application code.  How?  Keep on reading!
+> Observe como você não precisa codificar em nenhuma camada de baixo nível aqui. É apenas o nome do serviço `API_BUSINESS_PARTNER` que é relevante. O resto está conectado nos bastidores ou fora do código do aplicativo. Como? Continue lendo!
 
-👉 Open `/odata/v4/processor/Customers` to see the mock data from the `BusinessPartner` service.
+👉 Abra `/odata/v4/processor/Customers` para ver os dados simulados do serviço `BusinessPartner`.
 
-Let's change this and configured a remote system.
+Vamos mudar isso e configurar um sistema remoto.
 
 
-## Test with Remote System
+## Teste com sistema remoto
 
-As a ready-to-use stand-in for an SAP S4/HANA system, we use the sandbox system of _SAP Business Accelerator Hub_.
+Como substituto pronto para uso de um sistema SAP S4/HANA, usamos o sistema sandbox do _SAP Business Accelerator Hub_.
 
-> To use your own SAP S/4HANA Cloud system, see this [tutorial](https://developers.sap.com/tutorials/btp-app-ext-service-s4hc-use.html). You don't need it for this tutorial though.
+> Para usar seu próprio sistema SAP S/4HANA Cloud, consulte este [tutorial](https://developers.sap.com/tutorials/btp-app-ext-service-s4hc-use.html). Você não precisa disso para este tutorial.
 
-👉 Create a **new file `.env`** in the root folder and add **environment variables** that hold the URL of the sandbox as well as a personal API Key:
+👉 Crie um **novo arquivo `.env`** na pasta raiz e adicione **variáveis de ambiente** que contêm a URL do sandbox, bem como uma chave de API pessoal:
 
 ```properties
 DEBUG=remote
@@ -198,39 +197,36 @@ cds.requires.API_BUSINESS_PARTNER.[sandbox].credentials.url=https://sandbox.api.
 cds.requires.API_BUSINESS_PARTNER.[sandbox].credentials.headers.APIKey=<Copied API Key>
 ```
 
-Note the `[sandbox]` segment which denotes a [configuration profile](https://cap.cloud.sap/docs/node.js/cds-env#profiles) named `sandbox`.  The name has no special meaning.  You will see below how to use it.
-
-👉 Get an **API key** for your TechEd user: for the sake of this TechEd session, you can use this [key from here](https://github.com/SAP-samples/teched2023-AD264/wiki/Misc)
-(it will not be available after TechEd).
+Observe o segmento `[sandbox]` que denota um [perfil de configuração](https://cap.cloud.sap/docs/node.js/cds-env#profiles) chamado `sandbox`. O nome não tem nenhum significado especial. Você verá abaixo como usá-lo.
 
 <details>
-<summary>Alternatively, get an API key for your personal user:</summary>
+<summary>Como alternativa, obtenha uma chave de API para seu usuário pessoal:</summary>
 
-To get an API key for you personal user for _SAP Business Accelerator Hub_ :
+Para obter uma chave de API para seu usuário pessoal do _SAP Business Accelerator Hub_:
 
-- Go to [SAP Business Accelerator Hub](https://api.sap.com).
-- On the top right corner, expand the _Hi ..._ dropdown.  Choose _Settings_.
-- Click on _Show API Key_. Choose _Copy Key and Close_.
+- Acesse [SAP Business Accelerator Hub](https://api.sap.com).
+- No canto superior direito, expanda o menu suspenso _Olá ..._. Escolha _Configurações_.
+- Clique em _Mostrar chave API_. Escolha _Copiar chave e fechar_.
 
-  ![Get API key from SAP API Business Hub](./assets/hub-api-key.png)
+   ![Obter chave de API do SAP API Business Hub](./assets/hub-api-key.png)
 </details>
 
 <p>
 
-👉 **Add the key** to the `.env` file
+👉 **Adicione a chave** ao arquivo `.env`
 
-By putting the key in a separate file, you can exclude it from the Git repository (see the `.gitignore` file).<br>
+Ao colocar a chave em um arquivo separado, você pode excluí-la do repositório Git (veja o arquivo `.gitignore`).<br>
 
-> Note how the `cds.requires.API_BUSINESS_PARTNER` structure in the `.env file` matches to the `package.json` configuration.<br>
-To learn about more configuration options for CAP Node.js applications, see the [documentation](https://cap.cloud.sap/docs/node.js/cds-env).
+> Observe como a estrutura `cds.requires.API_BUSINESS_PARTNER` no arquivo `.env` corresponde à configuração `package.json`.<br>
+Para saber mais opções de configuração para aplicativos CAP Node.js, consulte a [documentação](https://cap.cloud.sap/docs/node.js/cds-env).
 
-👉 Now kill the server with <kbd>Ctrl+C</kbd> and run again with the `sandbox` profile activated:
+👉 Agora mate o servidor com <kbd>Ctrl+C</kbd> e execute novamente com o perfil `sandbox` ativado:
 
 ```sh
 cds watch --profile sandbox
 ```
 
-In the server log, you can see that the configuration is effective:
+No log do servidor, você pode ver que a configuração está efetiva:
 
 ```sh
 ...
@@ -241,13 +237,13 @@ In the server log, you can see that the configuration is effective:
 ...
 ```
 
-On the application's index page, the **mocked service is gone**, because it is no longer served in the application. Instead, it is assumed to be **running in a remote system**.  Through the configuration above, the system knows how to connect to it.
+Na página de índice da aplicação, o **serviço simulado desapareceu**, porque não é mais servido na aplicação. Em vez disso, presume-se que ele esteja **executando em um sistema remoto**. Através da configuração acima, o sistema sabe como se conectar a ele.
 
-👉 Open `/odata/v4/processor/Customers` to see the data coming from the remote system.
+👉 Abra `/odata/v4/processor/Customers` para ver os dados provenientes do sistema remoto.
 
-> If you get a `401` error instead, check your API key in the `.env` file.  After a change in the configuration, kill the server with <kbd>Ctrl+C</kbd> and start it again.
+> Se você receber um erro `401`, verifique sua chave de API no arquivo `.env`. Após uma mudança na configuração, mate o servidor com <kbd>Ctrl+C</kbd> e reinicie-o.
 
-You can also see something like this in the log (due to the `DEBUG=remote` variable from the `.env` file above):
+Você também pode ver algo assim no log (devido à variável `DEBUG=remote` do arquivo `.env` acima):
 
 ```
 [remote] - GET https://.../API_BUSINESS_PARTNER/A_BusinessPartner
@@ -255,22 +251,20 @@ You can also see something like this in the log (due to the `DEBUG=remote` varia
 ...
 ```
 
-This is the remote request sent by the framework when `S4bupa.run(req.query)` is executed.  The **`req.query` object is transparently translated to an OData query** `$select=BusinessPartner,BusinessPartnerFullName&$top=...&$orderby=...`.  The entire HTTP request (completed by the sandbox URL configuration) is then sent to the remote system with the help of **SAP Cloud SDK**.
+Esta é a solicitação remota enviada pelo framework quando `S4bupa.run(req.query)` é executado. O objeto **`req.query` é traduzido de forma transparente para uma consulta OData** `$select=BusinessPartner,BusinessPartnerFullName&$top=...&$orderby=...`. A solicitação HTTP inteira (concluída pela configuração do URL do sandbox) é então enviada ao sistema remoto com a ajuda do **SAP Cloud SDK**.
 
-Note how **simple** the execution of remote queries is.  No manual OData query construction needed, no HTTP client configuration like authentication, no response parsing, error handling, nor issues with hard-wired host names etc.
+Observe como é **simples** a execução de consultas remotas. Nenhuma construção manual de consulta OData é necessária, nenhuma configuração de cliente HTTP como autenticação, nenhuma análise de resposta, tratamento de erros, nem problemas com nomes de host conectados, etc.
 
-> See the [documentation on CQN](https://pages.github.tools.sap/cap/docs/cds/cqn) for more on such queries in general.  The [service consumption guide](https://pages.github.tools.sap/cap/docs/guides/using-services#execute-queries) details out how they are translated to remote requests.
+> Consulte a [documentação sobre CQN](https://pages.github.tools.sap/cap/docs/cds/cqn) para obter mais informações sobre essas consultas em geral. O [guia de consumo de serviços](https://pages.github.tools.sap/cap/docs/guides/using-services#execute-queries) detalha como eles são traduzidos para solicitações remotas.
 
-> CAP applications use the [SAP Cloud SDK](https://sap.github.io/cloud-sdk/) for HTTP connectivity.  SAP Cloud SDK abstracts authentication flows and communication with SAP BTPs [connectivity, destination, and authentication](https://sap.github.io/cloud-sdk/docs/js/features/connectivity/destination).
-It doesn't matter whether you want to connect against cloud or on-premises systems.
+> Os aplicativos CAP usam o [SAP Cloud SDK](https://sap.github.io/cloud-sdk/) para conectividade HTTP. O SAP Cloud SDK abstrai fluxos de autenticação e comunicação com SAP BTPs [conectividade, destino e autenticação](https://sap.github.io/cloud-sdk/docs/js/features/connectivity/destination).
+Não importa se você deseja se conectar à nuvem ou a sistemas locais.
 
+## Concluir a UI
 
+A IU precisa de mais algumas anotações para mostrar os dados alterados.
 
-## Finish UI
-
-The UI needs some more annotations to show the changed data.
-
-👉 First, some basic annotations that refer to `Customers` itself.  Add it to `app/incidents/annotations.cds`:
+👉 Primeiro, algumas anotações básicas que se referem aos próprios `Customers`. Adicione-o a `app/incidents/annotations.cds`:
 
 ```cds
 annotate service.Customers with @UI.Identification : [{ Value:name }];
@@ -281,7 +275,7 @@ annotate service.Customers with {
 };
 ```
 
-👉 Also in `app/incidents/annotations.cds`, add annotations that refer to `Incidents` and its association to `Customers`:
+👉 Também em `app/incidents/annotations.cds`, adicione anotações que se refiram a `Incidents` e sua associação a `Customers`:
 
 ```cds
 annotate service.Incidents with @(
@@ -310,21 +304,21 @@ annotate service.Incidents:customer with @Common: {
 };
 ```
 
-> Don't change the ellipsis `...` in the `cds` code above.  It's a special syntax for refering to the 'remaining values' of array-valued annotations.  The advantage of this syntax is that you do not have to repeat the other table columns.  See the [documentation](https://cap.cloud.sap/docs/cds/cdl#extend-array-annotations) for more.
+> Não altere as reticências `...` no código `cds` acima. É uma sintaxe especial para se referir aos 'valores restantes' de anotações com valores de array. A vantagem desta sintaxe é que você não precisa repetir as outras colunas da tabela. Consulte a [documentação](https://cap.cloud.sap/docs/cds/cdl#extend-array-annotations) para obter mais informações.
 
-## Verify in UI
+## Verifique na UI
 
-👉 Now click on the `/incidents/webapp/index.html` link on the index page.
-This file is part of the SAP Fiori Elements app in folder `app/incidents/webapp/`.
+👉 Agora clique no link `/incidents/webapp/index.html` na página de índice.
+Este arquivo faz parte do aplicativo SAP Fiori Elements na pasta `app/incidents/webapp/`.
 
 ![](assets/fiori-app-html.png)
 
-> For more on SAP Fiori elements, see [session AD161 - Build Full-Stack Applications with SAP Build Code Tools](https://github.com/SAP-samples/teched2023-AD161/blob/main/exercises/Ex7/README.md).  There, you can also learn about the dedicated tools for the UI annotations.  You don't need to type them manually.
+> Para obter mais informações sobre os elementos SAP Fiori, consulte [sessão AD161 - Construir aplicativos Full-Stack com ferramentas de código de construção SAP](https://github.com/SAP-samples/teched2023-AD161/blob/main/exercises/Ex7/README .md). Lá, você também pode aprender sobre as ferramentas dedicadas para anotações da IU. Você não precisa digitá-los manualmente.
 
-👉 **Create a new incident** and **select a customer** using the value help. When pressing _Save_, watch the console output of the application and see the `>> delegating to S4 service...` message.
+👉 **Crie um novo incidente** e **selecione um cliente** usando a ajuda de valor. Ao pressionar _Salvar_, observe a saída do console do aplicativo e veja a mensagem `>> delegando ao serviço S4...`.
 
-## Summary
+## Resumo
 
-You have added basic capabilities to call out to a remote service.
+Você adicionou recursos básicos para chamar um serviço remoto.
 
-Continue to [exercise 3](../ex3/README.md) to see how this can be enhanced.
+Continue para o [exercício 3](../ex3/README.md) para ver como isso pode ser aprimorado.
