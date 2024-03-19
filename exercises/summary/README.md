@@ -1,42 +1,34 @@
-## What You Have Seen
+## O que você viu
 
-In exercise 1, you have seen many of the basic feature of SAP Cloud Application Programming Model (CAP):
+No exercício 1, você viu muitos dos recursos básicos do SAP Cloud Application Programming Model (CAP):
 
-- **Projects** can be created with just one click and incrementally grown as you go
-- **CDS entities** are a concise way to express the basic structure of your data model
-- **Projections** in CDS services are a powerful means tailor your entities for specific APIs
-- **CDS services** allow to expose entities as API
-- **Reuse libraries** are available for commonly used entities and fields
-- **OData** as a protocol is served out of the box and has powerful querying capabilities
+- **Projetos** podem ser criados com apenas um clique e aumentados gradativamente conforme você avança
+- **Entidades CDS** são uma forma concisa de expressar a estrutura básica do seu modelo de dados
+- **Projeções** em serviços CDS são um meio poderoso de personalizar suas entidades para APIs específicas
+- **serviços CDS** permitem expor entidades como API
+- **Bibliotecas de reutilização** estão disponíveis para entidades e campos comumente usados
+- **OData** como protocolo é fornecido imediatamente e possui poderosos recursos de consulta
 
-In exercises 2 and 3, you have seen the **basic steps to integrate a remote service** like
+Nos exercícios 2 e 3, você viu as **etapas básicas para integrar um serviço remoto** como
 
-- **Projections** on a remote API defintion
-- **Delegate queries** to the remote service
-- **Mash up** the remote service with local services
-- **Optimize** performance by adding on-demand replication
-- **Eventing** helps your app keep data up to date
-- **Mock** the remote service for local development
-- **Integration packages** that can be used to provide reusable projections, event definitions, service implementations, and sample data.
+- **Projeções** em uma definição de API remota
+- **Delegar consultas** ao serviço remoto
+- **Combinação** do serviço remoto com serviços locais
+- **Otimize** o desempenho adicionando replicação sob demanda
+- **Eventing** ajuda seu aplicativo a manter os dados atualizados
+- **Mock** o serviço remoto para desenvolvimento local
+- **Pacotes de integração** que podem ser usados para fornecer projeções reutilizáveis, definições de eventos, implementações de serviços e dados de amostra.
 
-Check out the cookbook about [Consuming Services](https://cap.cloud.sap/docs/guides/using-services) for more.
-
-
-## How to Continue
-
-You might want to **save your work** so that you can continue later on.  Do this by
-
-- Committing your changes: `git add -A && git commit -m 'Workshop changes'`
-- [Forking](https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository) this repository to your personal GitHub account. Then change the remote URL of your local repo accordingly: `git remote set-url origin <ForkURL>`
-- Pushing the commits with `git push`
+Confira o livro de receitas sobre [Consumir Serviços](https://cap.cloud.sap/docs/guides/using-services) para mais informações.
 
 
-Check out the **complete version** of the application in the `final` branch of the repository: `git checkout final` <br>
+## Como continuar
 
-### Further Learning
+Você pode querer **salvar seu trabalho** para poder continuar mais tarde. Faça isso por
 
-Go through [session AD161](https://github.com/SAP-samples/teched2023-AD161) which covers basically the same scenario, but
-- Focuses on **visual tools** provided in SAP Business Application Studio
-- Adds an **full UI application with SAP Fiori Elements**
-- Includes application **deployment to SAP BTP**.  Note that you need an SAP BTP trial account here.
-- Shows an integration with **SAP Build Workzone**
+- Comprometendo suas alterações: `git add -A && git commit -m 'Workshop changes'`
+- [Forking](https://docs.github.com/en/get-started/quickstart/fork-a-repo#forking-a-repository) este repositório para sua conta pessoal do GitHub. Em seguida, altere o URL remoto do seu repositório local de acordo: `git remote set-url origin <ForkURL>`
+- Enviando os commits com `git push`
+
+
+Confira a **versão completa** da aplicação no branch `final` do repositório: `git checkout final` <br>
