@@ -1,31 +1,31 @@
-# Exercise 3: Replication and Events
+# Exercício 3: Replicação e Eventos
 
-In the incidents list, the application shall display (remote) customer data together with (application-local) incident data.
-This raises a **performance issue**: when showing potentially hundreds of incidents, shall the app reach out to the remote system at all?  Or just for single records, for all records at once, or for a chunk of records?
+Na lista de incidentes, a aplicação deve exibir dados do cliente (remotos) juntamente com dados de incidentes (locais da aplicação).
+Isso levanta um **problema de desempenho**: ao mostrar potencialmente centenas de incidentes, o aplicativo deve chegar ao sistema remoto? Ou apenas para registros únicos, para todos os registros de uma vez ou para um conjunto de registros?
 
-We use a different approach by **replicating remote data on demand**.
+Usamos uma abordagem diferente ao **replicar dados remotos sob demanda**.
 
-The scenario will look like this:
-- The user enters a new incident and selects the customer through the value help.  The value help shows only _remote_ customer data.
-- As soon as the incident record is created, the customer data is written to a local replica table.
-- Further requests for the incident's customer are served from this replica table.
-- Replicated records will be updated if a remote customer changes.
+O cenário ficará assim:
+- O usuário insere uma nova ocorrência e seleciona o cliente através da ajuda de valor. A ajuda do valor mostra apenas dados do cliente _remote_.
+- Assim que o registro do incidente é criado, os dados do cliente são gravados em uma tabela de réplica local.
+- Outras solicitações para o cliente do incidente são atendidas nesta tabela de réplica.
+- Os registros replicados serão atualizados se um cliente remoto mudar.
 
-👉 Start by **adding a persistent table** for the replicas.  This can be done with just one line in `db/data-model.cds`:
+👉 Comece **adicionando uma tabela persistente** para as réplicas. Isso pode ser feito com apenas uma linha em `db/data-model.cds`:
 
 ```cds
 annotate Customers with @cds.persistence.table;
 ```
 
-The annotation `@cds.persistence.table` turns the view above into a table with the same signature (`ID` and `name` columns).  See the [documentation](https://cap.cloud.sap/docs/cds/annotations#persistence) for more on annotations that influence persistence.
+A anotação `@cds.persistence.table` transforma a visualização acima em uma tabela com a mesma assinatura (colunas `ID` e `name`). Consulte a [documentação](https://cap.cloud.sap/docs/cds/annotations#persistence) para saber mais sobre anotações que influenciam a persistência.
 
-> You could have added the annotation directly to the `Customers` definition.  The result would be the same.  With the [`annotate` directive](https://cap.cloud.sap/docs/cds/cdl#the-annotate-directive) though, you get the power to enhance entities (even external/base/reuse entities!) at different places in your application.
+> Você poderia ter adicionado a anotação diretamente à definição de `Customers`. O resultado seria o mesmo. Porém, com a [diretiva `annotate`](https://cap.cloud.sap/docs/cds/cdl#the-annotate-directive), você obtém o poder de aprimorar entidades (até mesmo entidades externas/base/reutilizáveis!) em diferentes locais da sua aplicação.
 
-## Replicate Data On Demand
+## Replicar dados sob demanda
 
-Now there is code needed to replicate the customer record whenever an incident is created.
+Agora é necessário um código para replicar o registro do cliente sempre que um incidente é criado.
 
-👉 In file `srv/processor-service.js`, add this code (to the `init` function):
+👉 No arquivo `srv/processor-service.js`, adicione este código (à função `init`):
 
 ```js
   const db = await cds.connect.to('db')                // our primary database
@@ -41,14 +41,14 @@ Now there is code needed to replicate the customer record whenever an incident i
   })
 ```
 
-👉 Now create an incident in the UI.  Don't forget to select a customer through the value help.<br>
-In the log, you can see the `>> Updating customer` line, confirming that replication happens.
+👉 Agora crie um incidente na IU. Não se esqueça de selecionar um cliente através da ajuda de valor.<br>
+No log, você pode ver a linha `>> Atualizando cliente`, confirmando que a replicação acontece.
 
-## Test without UI
+## Teste sem UI
 
-With the [REST client for VS Code](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), you can conveniently test the same flow without the UI.
+Com o [cliente REST para VS Code](https://marketplace.visualstudio.com/items?itemName=humao.rest-client), você pode testar convenientemente o mesmo fluxo sem a IU.
 
-👉 Create a file `tests.http` with this content:
+👉 Crie um arquivo `tests.http` com este conteúdo:
 
 ```
 ###
@@ -69,35 +69,35 @@ POST http://localhost:4004/odata/v4/processor/Incidents(ID={{id}},IsActiveEntity
 Content-Type: application/json
 ```
 
-👉 Click `Send Request` above the `POST .../Incidents` line. This will create the record in a draft tate.<br>
-👉 Click `Send Request` above the `POST .../draftActivate` line. This corresponds to the `Save` action in the UI.
+👉 Clique em `Enviar solicitação` acima da linha `POST .../Incidents`. Isso criará o registro em um projeto de lei.<br>
+👉 Clique em `Enviar solicitação` acima da linha `POST .../draftActivate`. Isso corresponde à ação `Salvar` na UI.
 
-  > This second request is needed for all changes to entities managed by [SAP Fiori's draft](https://cap.cloud.sap/docs/advanced/fiori#draft-support) mechanism.
+  > Esta segunda solicitação é necessária para todas as alterações em entidades gerenciadas pelo mecanismo [rascunho do SAP Fiori](https://cap.cloud.sap/docs/advanced/fiori#draft-support).
 
-You should see the same `>> Updating customer` server log.
+Você deverá ver o mesmo log do servidor `>> Atualizando o cliente`.
 
 
-## Event-based Replication
+## Replicação baseada em eventos
 
-We haven't discussed yet how to _update_ the cache table holding the `Customers` data.  We'll use _events_ to inform our application whenever the remote BusinessPartner has changed.
+Ainda não discutimos como _atualizar_ a tabela de cache que contém os dados de `Customers`. Usaremos _events_ para informar nosso aplicativo sempre que o BusinessPartner remoto for alterado.
 
-Let's see what the integration package provides.
+Vamos ver o que o pacote de integração oferece.
 
-👉 Open `node_modules/s4-bupa-integration/bupa/index.cds`
+👉 Abra `node_modules/s4-bupa-integration/bupa/index.cds`
 
-<details>
-<summary>Quick question: how can you jump to this file real quick?</summary>
+<detalhes>
+<summary>Pergunta rápida: como você pode pular para este arquivo bem rápido?</summary>
 
-Use the `cds watch` output in the console. The file is listed there because it is loaded when the application starts.
+Use a saída `cds watch` no console. O arquivo está listado lá porque é carregado quando o aplicativo é iniciado.
 
-<kbd>Ctrl+Click</kbd> on the file to open it:
+<kbd>Ctrl+Clique</kbd> no arquivo para abri-lo:
 
-![Jump to file in the console](assets/ConsoleJumpToFile.png)
-</details>
+![Ir para o arquivo no console](assets/ConsoleJumpToFile.png)
+</detalhes>
 
 <p>
 
-There, you can see that event definitions for `BusinessPartner` are available:
+Lá você pode ver que as definições de evento para `BusinessPartner` estão disponíveis:
 
 ```cds
 event BusinessPartner.Created @(topic : 'sap.s4.beh.businesspartner.v1.BusinessPartner.Created.v1') {
@@ -108,16 +108,16 @@ event BusinessPartner.Changed @(topic : 'sap.s4.beh.businesspartner.v1.BusinessP
 }
 ```
 
-The benefits of these 'modeled' event definitions are:
-- [CAP's support for events and messaging](https://cap.cloud.sap/docs/guides/messaging) can automatically _subscribe_ to message brokers and _emit_ events behind the scenes.
-- Also, event names like `BusinessPartner.Changed` are semantically closer to the domain and easier to read than the underlying technical events like `sap.s4.beh.businesspartner.v1.BusinessPartner.Changed.v1`.
+Os benefícios dessas definições de eventos 'modelados' são:
+- [O suporte do CAP para eventos e mensagens](https://cap.cloud.sap/docs/guides/messaging) pode _inscrever-se_ automaticamente para corretores de mensagens e _emitir_ eventos nos bastidores.
+- Além disso, nomes de eventos como `BusinessPartner.Changed` são semanticamente mais próximos do domínio e mais fáceis de ler do que os eventos técnicos subjacentes como `sap.s4.beh.businesspartner.v1.BusinessPartner.Changed.v1`.
 
 
-## React to Events
+## Reaja aos eventos
 
-To close the loop, add code to **consume events**.
+Para fechar o loop, adicione código a **consumir eventos**.
 
-👉 In `srv/processor-service.js`, add this event handler:
+👉 Em `srv/processor-service.js`, adicione este manipulador de eventos:
 
 ```js
     // update cache if BusinessPartner has changed
@@ -129,14 +129,14 @@ To close the loop, add code to **consume events**.
     })
 ```
 
-## Emitting Events from Mocked Services
+## Emitindo eventos de serviços simulados
 
-But who is the **event emitter**?  Usually it's the remote data source, i.e. the SAP S4/HANA system.  For local runs, it would be great if something could **emit events when testing**.  Luckily, there is alreday a simple event emitter in the integration package!
+Mas quem é o **emissor do evento**? Geralmente é a fonte de dados remota, ou seja, o sistema SAP S4/HANA. Para execuções locais, seria ótimo se algo pudesse **emitir eventos durante o teste**. Felizmente, já existe um emissor de eventos simples no pacote de integração!
 
-👉 Open file `node_modules/s4-bupa-integration/bupa/API_BUSINESS_PARTNER.js`.<br>
-You know how you can open it real quick, don't you? :)
+👉 Abra o arquivo `node_modules/s4-bupa-integration/bupa/API_BUSINESS_PARTNER.js`.<br>
+Você sabe como pode abri-lo bem rápido, não é? :)
 
-It uses the [`emit` API](https://cap.cloud.sap/docs/node.js/core-services#srv-emit-event) to send out an event:
+Ele usa a [API `emit`](https://cap.cloud.sap/docs/node.js/core-services#srv-emit-event) para enviar um evento:
 
 ```js
   ...
@@ -148,34 +148,34 @@ It uses the [`emit` API](https://cap.cloud.sap/docs/node.js/core-services#srv-em
   this.after('CREATE', A_BusinessPartner, ...)
 ```
 
-This means whenever you change or create data through the `API_BUSINESS_PARTNER` mock service, a local event is emitted.
-Also note how the event name `BusinessPartner.Changed` matches to the event definition from the CDS code above.
+Isso significa que sempre que você altera ou cria dados por meio do serviço simulado `API_BUSINESS_PARTNER`, um evento local é emitido.
+Observe também como o nome do evento `BusinessPartner.Changed` corresponde à definição do evento do código CDS acima.
 
-## Put it all together
+## Junte tudo
 
-Before starting the application again, it's time to turn the current in-memory database into a persistent one.  This way, data is not reset after each restart, which is useful if you added data manually.
+Antes de iniciar o aplicativo novamente, é hora de transformar o banco de dados atual na memória em um banco de dados persistente. Dessa forma, os dados não são redefinidos após cada reinicialização, o que é útil se você adicionou dados manualmente.
 
-👉 So, kill `cds watch`, then execute:
+👉 Então, mate `cds watch` e execute:
 
 ```sh
 cds deploy --with-mocks --to sqlite
 ```
 
-> This deploys the current SQL equivalent of your CDS model to a persistent database.  This also means that after changes to the data model (new fields, entities etc.), you need to execute the `cds deploy ...` command again.  Keep this in mind in case you see errors like _table/view not found_.
+> Isso implanta o equivalente SQL atual do seu modelo CDS em um banco de dados persistente. Isso também significa que após alterações no modelo de dados (novos campos, entidades etc.), você precisa executar o comando `cds deploy ...` novamente. Tenha isso em mente caso você veja erros como _tabela/visualização não encontrada_.
 
-<!-- You might also want to open the `db.sqlite` file and inspect the contents of the database:
-![Database content](assets/sqlite-dump.png) -->
+<!-- Você também pode querer abrir o arquivo `db.sqlite` e inspecionar o conteúdo do banco de dados:
+![Conteúdo do banco de dados](assets/sqlite-dump.png) -->
 
 
-👉 Start the application with a hint to use a SQLite database (which in this case means a persistent DB):
+👉 Inicie a aplicação com uma dica para usar um banco de dados SQLite (que neste caso significa um banco de dados persistente):
 
 ```sh
 CDS_REQUIRES_DB=sqlite cds watch
 ```
 
-> `CDS_REQUIRES_DB=sqlite` has the same effect as `"cds": { "requires": { db:"sqlite" } }` in `package.json`, only that the latter is a permanent setting.
+> `CDS_REQUIRES_DB=sqlite` tem o mesmo efeito que `"cds": { "requires": { db:"sqlite" } }` em `package.json`, só que o último é uma configuração permanente.
 
-The application runs as before.  In the log, however, you no longer see a database deployment, but a line like:
+O aplicativo é executado como antes. No log, entretanto, você não vê mais uma implantação de banco de dados, mas uma linha como:
 
 ```sh
 ...
@@ -183,9 +183,9 @@ The application runs as before.  In the log, however, you no longer see a databa
 ...
 ```
 
-👉 In your file `tests.http`, first execute the 2 requests to **create an incident** again (see [section above](#test-without-ui)).
+👉 No seu arquivo `tests.http`, primeiro execute as 2 solicitações para **criar um incidente** novamente (veja [seção acima](#test-without-ui)).
 
-Now **change customer** `1001039` with an HTTP request. Add this request to the `http` file:
+Agora **altere o cliente** `1001039` com uma solicitação HTTP. Adicione esta solicitação ao arquivo `http`:
 
 ```
 ###
@@ -198,38 +198,38 @@ Content-Type: application/json
 }
 ```
 
-👉 After clicking `Send Request` above the `PUT ...` line, you should see both the event being emitted as well as received:
+👉 Após clicar em `Send Request` acima da linha `PUT ...`, você deverá ver tanto o evento sendo emitido quanto recebido:
 
 ```
 >> BusinessPartner.Changed { BusinessPartner: 'Z100001' }
 << received BusinessPartner.Changed { BusinessPartner: 'Z100001' }
 ```
 
-The SAP Fiori UI also reflects the changed data in the incidents list:
+A UI do SAP Fiori também reflete os dados alterados na lista de incidentes:
 
-![Updated customer list](assets/updated-customer.png)
+![Lista de clientes atualizada](assets/updated-customer.png)
 
-> Note that we can't test the event roundtrip in the `cds watch --profile sandbox` mode, as the sandbox system of _SAP Business Accelerator Hub_ does not support modifications.  You would need to use a dedicated SAP S/4HANA system here.  See this [tutorial](https://developers.sap.com/tutorials/btp-app-ext-service-s4hc-register.html) for how to register your own SAP S/4HANA system.
+> Observe que não podemos testar o evento de ida e volta no modo `cds watch --profile sandbox`, pois o sistema sandbox do _SAP Business Accelerator Hub_ não suporta modificações. Você precisaria usar um sistema SAP S/4HANA dedicado aqui. Consulte este [tutorial](https://developers.sap.com/tutorials/btp-app-ext-service-s4hc-register.html) para saber como registrar seu próprio sistema SAP S/4HANA.
 
 
-## Summary
+## Resumo
 
-In this and the last exercise, you've learned how to add an integration package.  You've also seen that quite some application code could be avoided, namely:
+Neste e no último exercício, você aprendeu como adicionar um pacote de integração. Você também viu que alguns códigos de aplicativos poderiam ser evitados, a saber:
 
-- The BusinessPartner API description for the structure (entities, types etc), as CDS model
-- The BusinessPartner event definitions, as CDS model
-- The service mock implementation and sample data
-- Event emitters for local testing
+- A descrição da API BusinessPartner para a estrutura (entidades, tipos etc), conforme modelo CDS
+- As definições do evento BusinessPartner, conforme modelo CDS
+- A implementação simulada do serviço e dados de amostra
+- Emissores de eventos para testes locais
 
-Depending on the application scenario, more and higher-level features can be added in such packages, like
+Dependendo do cenário da aplicação, mais recursos de nível superior podem ser adicionados a esses pacotes, como
 
-- CDS projections for model parts that are often used, like a `Customers` definition.
-- Additional annotations, like for SAP Fiori Elements
-- Translated content like i18n files
+- Projeções CDS para peças de modelo que são frequentemente utilizadas, como uma definição de `Customers`.
+- Anotações adicionais, como para SAP Fiori Elements
+- Conteúdo traduzido como arquivos i18n
 
-The following picture shows how the integration/reuse package and the application project work together on a technical level.
+A imagem a seguir mostra como o pacote de integração/reutilização e o projeto do aplicativo funcionam juntos em nível técnico.
 
 ![](assets/reuse-overview.drawio.svg)
 
 
-Let's do a general [wrap-up](../summary/) of what you have seen.
+Vamos fazer um resumo geral(../summary/) do que você viu.
