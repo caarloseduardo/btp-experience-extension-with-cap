@@ -313,8 +313,6 @@ Este arquivo faz parte do aplicativo SAP Fiori Elements na pasta `app/incidents/
 
 ![](assets/fiori-app-html.png)
 
-> Para obter mais informações sobre os elementos SAP Fiori, consulte [sessão AD161 - Construir aplicativos Full-Stack com ferramentas de código de construção SAP](https://github.com/SAP-samples/teched2023-AD161/blob/main/exercises/Ex7/README .md). Lá, você também pode aprender sobre as ferramentas dedicadas para anotações da UI. Você não precisa digitá-los manualmente.
-
 👉 **Crie um novo incidente** e **selecione um cliente** usando a ajuda de valor. Ao pressionar _Salvar_, observe a saída do console do aplicativo e veja a mensagem `>> delegando ao serviço S4...`.
 
 ## Resumo
