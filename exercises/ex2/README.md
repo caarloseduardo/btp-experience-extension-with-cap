@@ -41,7 +41,7 @@ Por conveniência, usamos uma dependência `git` para uma ramificação neste re
 👉 No terminal, execute isto para baixar o pacote:
 
 ```sh
-npm add git+https://github.com/SAP-samples/teched2023-AD264#bupa-integration-package
+npm add git+https://github.com/caarloseduardo/btp-experience-extension-with-cap#bupa-integration-package
 ```
 
 👉 Vamos ver o que foi instalado. Expanda a pasta `node_modules/s4-bupa-integration` (no explorador de arquivos ou no terminal):
