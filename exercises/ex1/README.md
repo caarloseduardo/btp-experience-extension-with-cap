@@ -472,7 +472,7 @@ Se você deseja depurar o código usando o depurador visual Javascript integrado
 
 ## Adicionar outro serviço
 
-No serviço acima, você usou apenas a forma mínima de uma [projeção CDS](https://cap.cloud.sap/docs/cds/cdl#views-and-projections), que basicamente faz uma -uma exposição de uma entidade à superfície da API:
+No serviço acima, você usou apenas a forma mínima de uma [projeção CDS](https://cap.cloud.sap/docs/cds/cdl#views-and-projections), que basicamente faz uma exposição de uma entidade à superfície da API:
 
 ```cds
 service ProcessorService {
